@@ -8,10 +8,11 @@ def dft(amps):
     n_amps = len(amps)
     for k in range(n_amps):
         for n in range(n_amps):
-            output[n] += amps[n]*np.e**(-2j*(np.pi)*(n)*(k)/n_amps)
+            #Implement the sum formula
+            output[k] += amps[n]*np.e**(-2j*(np.pi)*(n)*(k)/n_amps)
         
     return output
-    
+
     
     
     
