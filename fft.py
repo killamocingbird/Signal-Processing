@@ -21,12 +21,27 @@ def fft(x):
     #Second factor
     factor2 = len(x) / factor1
     
-    #Rearrange 
+    #Rearrange into 2D matrix for divide-and-conquer
+    M = np.reshape(x, (factor1, factor2))
     
+    #Compute dft across columns
+    for col in range(factor2):
+        M[:,col] = dft.dft(M[:,col])
+        
+    #Compute and apply twiddle matrix
+    T = np.array([[math.e**(-2j * math.pi / len(x) * a * b) 
+                for b in range(factor2)] 
+                for a in range(factor1)])
+    #Apply inner product
+    M = M * T
     
-
-
-
+    #Compute dft across rows
+    for row in range(factor1):
+        M[row,:] = dft.dft(M[row,:])
+    
+    #Transpose and unravel
+    y = np.reshape(np.transpose(M), (-1))
+    return y
 
 
 #Finds the next prime factor of an integer x
@@ -37,3 +52,6 @@ def next_factor(x):
         if i%x == 0:
             return i
     return x
+
+
+
