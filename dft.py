@@ -2,7 +2,13 @@ import numpy as np
 
 def dft(signal, twiddle_mat=None):
     
-    l_signal = len(signal)
+    #Allow for batching
+    if len(signal.shape) == 1:
+        l_signal = signal.shape[0]
+    elif len(signal.shape) == 2:
+        l_signal = signal.shape[1]
+    else:
+        raise Exception("Dimension error")
     
     if twiddle_mat is None:
         #Generate twiddle matrix
@@ -12,4 +18,4 @@ def dft(signal, twiddle_mat=None):
                 twiddle_mat[a][b] += np.e**(-2j*(np.pi)*(a)*(b)/l_signal)
                 
     #Return matrix multiplication
-    return np.matmul(twiddle_mat, signal)
+    return np.matmul(twiddle_mat, np.transpose(signal))
