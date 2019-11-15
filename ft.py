@@ -6,13 +6,11 @@ import utils
 #author: Justin L. Wang
 #Implementation of Cooley-Tukey fast fourier transform algorithm
 #[Inputs]   signal: a 1D time-domain numpy array containing the signal to perform fft on
-#                   a 2D batch of time-domain signals with dim num_signals x signal_length
-#           twiddle_matrix: matrix of size len(signal) x len(signal) to sample twiddles from
+#                   a 2D batch of time-domain signals with dim (num_signals x signal_length)
+#           twiddle_matrix: matrix of dim (len(signal) x len(signal)) to sample twiddles from
 #[Outputs]  y: a 1D complex valued numpy array containing the dft of x
+#              a 2D batch of dfts with dim (num_signals x signal_length)
 def fft(signal, twiddle_mat=None):
-    #Check dimensions
-    if len(signal) < 1:
-        raise Exception("Dimension error")
     
     #Allow for batching
     if len(signal.shape) == 1:
@@ -56,17 +54,18 @@ def fft(signal, twiddle_mat=None):
     
     #Transpose and unravel
     y = np.reshape(np.transpose(M), (-1, l_signal))
-    return y
+    return np.transpose(y)
 
 
 #author: Quinn Collins
-#Implementation of Cooley-Tukey discrete fourier transform algorithm
+#Implementation of discrete fourier transform
 #[Inputs]   signal: a 1D time-domain numpy array containing the signal to perform dft on
-#                   a 2D batch of time-domain signals with dim num_signals x signal_length
-#           twiddle_matrix: matrix of size len(signal) x len(signal) to sample twiddles from
+#                   a 2D batch of time-domain signals with dim (num_signals x signal_length)
+#           twiddle_matrix: matrix of size (len(signal) x len(signal)) to sample twiddles from
 #[Outputs]  y: a 1D complex valued numpy array containing the dft of x
+#              a 2D batch of dfts with dim (num_signals x signal_length)
 def dft(signal, twiddle_mat=None):
-    
+   
     #Allow for batching
     if len(signal.shape) == 1:
         l_signal = signal.shape[0]
@@ -83,4 +82,5 @@ def dft(signal, twiddle_mat=None):
                 twiddle_mat[a][b] += np.e**(-2j*(np.pi)*(a)*(b)/l_signal)
                 
     #Return matrix multiplication
-    return np.matmul(twiddle_mat, np.transpose(signal))
+    y = np.matmul(twiddle_mat, np.transpose(signal))
+    return np.transpose(y)
