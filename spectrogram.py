@@ -35,7 +35,7 @@ def gen_spectrogram(signal, fs, window_size, overlap=0.5):
     
     #Get the frequency and time resolution along with time phase shift
     freq_res = fs / window_size
-    time_res = window_size / fs
+    time_res = num_hop / fs
     
     spectrogram = np.zeros((math.floor(window_size / 2), math.floor((len(signal) - window_size) / num_hop) + 1))
     
@@ -89,8 +89,8 @@ def plot_spectrogram(spectro, freq_res, time_res, freq_range=None, time_range=No
     #Scale axises
     xticks = ax.get_xticks()[1:-1]
     yticks = ax.get_yticks()[1:-1]
-    plt.xticks(xticks, xticks * time_res + starting_time)
-    plt.yticks(yticks, (yticks * freq_res + starting_freq)[::-1])
+    plt.xticks(xticks, np.round(xticks * time_res + starting_time, decimals=1))
+    plt.yticks(yticks, np.round((yticks * freq_res + starting_freq)[::-1]))
     #Set labels
     plt.xlabel("Time (s)")
     plt.ylabel("Freq (Hz)")
