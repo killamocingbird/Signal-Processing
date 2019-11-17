@@ -37,7 +37,7 @@ def fft(signal, twiddle_mat=None):
         M[:,:,col] = fft(M[:,:,col], twiddle_mat)
         
     if twiddle_mat==None:
-        #Compute twiddle matrix
+        #Generate twiddle matrix
         T = np.array([[math.e**(-2j * math.pi / len(signal) * a * b) 
                     for b in range(factor2)] 
                     for a in range(factor1)])
@@ -76,11 +76,13 @@ def dft(signal, twiddle_mat=None):
     
     if twiddle_mat is None:
         #Generate twiddle matrix
-        twiddle_mat = np.full((l_signal, l_signal), 0j)
-        for a in range(l_signal):
-            for b in range(l_signal):
-                twiddle_mat[a][b] += np.e**(-2j*(np.pi)*(a)*(b)/l_signal)
-                
+        T = np.array([[math.e**(-2j * math.pi / l_signal * a * b) 
+                    for b in range(l_signal)] 
+                    for a in range(l_signal)])
+    else:
+        #Draw twiddle from matrix
+        T = twiddle_mat[:l_signal,:l_signal]
+    
     #Return matrix multiplication
-    y = np.matmul(twiddle_mat, np.transpose(signal))
+    y = np.matmul(T, np.transpose(signal))
     return np.transpose(y)
