@@ -42,7 +42,7 @@ def gen_spectrogram(signal, fs, window_size, overlap=0.5):
     #Get amplitudes for each window
     for i in range(math.floor((len(signal) - window_size) / num_hop) + 1):
         #Extract dft amplitudes
-        window_amps = get_amplitudes(signal[i * num_hop:window_size + i * num_hop], twiddle_mat)
+        window_amps = get_amplitudes(signal[i * num_hop:window_size + i * num_hop] * np.hamming(window_size), twiddle_mat)
         #Fill spectrogram with first half of dft amplitudes
         spectrogram[:,i] = window_amps[:math.floor(window_size / 2)]
         
