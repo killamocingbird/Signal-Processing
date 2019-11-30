@@ -2,7 +2,11 @@ import math
 import torch
 
 import data
-import model1
+
+import sys
+sys.path.append('models/')
+import backprop_binary
+import centroid_distance
 
 #File paths for data
 voice_data_files = ['../gettysburg.wav', '../preamble.wav']
@@ -43,29 +47,36 @@ ytrain = torch.cat((torch.zeros(num_train), torch.ones(num_train)))
 xval = torch.cat((voice_data[num_train:], music_data[num_train:]))
 yval = torch.cat((torch.zeros(len(xval) // 2), torch.ones(len(xval) // 2)))
 
+
+"""
+Backprop based binary classifier
+
 #Declare model
 epsilon = math.sqrt(window_size / 2) / 2
-model = model1.Model1(window_size // 2, epsilon)
+model = backprop_binary.Model(window_size // 2, epsilon)
 
 #Train model
 print("Training")
-epochs = 500
+epochs = 1000
 model.train(xtrain, ytrain, epochs, lr=5e-2, verbose=True)
 
 #Test model
 print("Testing")
 print("Accuracy: %.2f" % (100 * model.validate(xval, yval)))
+"""
+
+"""
+Centroid-distance based classifier
+"""
+
+#Declare model
+model = centroid_distance.Model(xtrain.shape[1], 2)
+
+#Train model
+model.train(xtrain, ytrain)
+
+#Test model
+print("Accuracy: %.2f" % (100 * model.validate(xval, yval)))
 
 
 
-
-
-
-
-
-
-
-    
-
-    
-    
